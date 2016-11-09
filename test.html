@@ -1,0 +1,51 @@
+<html>
+<body>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
+    <script src="ko.editables.js"></script>
+
+    <input data-bind="textInput: props.txt1, enable: isEditing">
+    <input data-bind="textInput: props.txt2, enable: isEditing">
+    <input type="checkbox" data-bind="checked: props.isChecked, enable: isEditing">
+
+    <button data-bind="click: edit, visible: !isEditing()">Edit</button>
+    <span data-bind="visible: isEditing">
+        <button data-bind="click: cancel">Cancel</button>
+        <button data-bind="click: save">Save</button>
+    </span>
+
+    <script>
+        var vm = new function() {
+            var self = this;
+
+            this.isEditing = ko.observable(false);
+
+            this.props = {
+                txt1: ko.observable('abc'),
+                txt2: ko.observable('def'),
+                isChecked: ko.observable(false)
+            };
+
+            ko.editable(this.props);
+            this.props.beginEdit();
+
+            this.edit = function() {
+                self.props.beginEdit();
+                self.isEditing(true);
+            };
+
+            this.cancel = function() {
+                self.props.rollback();
+                self.isEditing(false);
+            };
+
+            this.save = function() {
+                self.props.commit();
+                self.isEditing(false);
+            };
+        };
+
+        ko.applyBindings(vm);
+
+    </script>
+</body>
+</html>
